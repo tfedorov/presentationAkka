@@ -10,6 +10,8 @@ object Table {
 
   val availablePlayers: mutable.Buffer[Player] = shuffle(10).toBuffer
 
+  def onlyOneCandidate() = candidates.distinct.size == 1
+
   def setCandidates(newCandidates: Seq[Player]) = {
     candidates.clear()
 

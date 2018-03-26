@@ -1,6 +1,6 @@
 package com.epam.maf
 
-import com.epam.maf.EmulatorApp.{Vote, random}
+import com.epam.maf.EmulatorApp.random
 
 abstract class Player(val number: Int, val isMafia: Boolean) {
   def makeVote(availablePlayers: Seq[Player]): Vote
@@ -11,7 +11,6 @@ abstract class Player(val number: Int, val isMafia: Boolean) {
   }
 
   def makeCandidate(availablePlayers: Seq[Player]): Player
-
 
 }
 
@@ -45,4 +44,8 @@ case class PeacePlayer(num: Int) extends Player(num, false) {
     randomNotSelf(availablePlayers)
   }
 
+}
+
+case class Vote(player: Player, whom: Player) {
+  override def toString: String = s"${player.number} -> ${whom.number}"
 }

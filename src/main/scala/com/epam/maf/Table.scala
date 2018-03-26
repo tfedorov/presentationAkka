@@ -7,12 +7,20 @@ import scala.collection.mutable
 object Table {
 
   val candidates: mutable.Buffer[Player] = mutable.Buffer.empty[Player]
+
   val availablePlayers: mutable.Buffer[Player] = shuffle(10).toBuffer
+
+  def setCandidates(newCandidates: Seq[Player]) = {
+    candidates.clear()
+
+    candidates ++= newCandidates
+  }
 
   def playersNumber = availablePlayers.size
 
-  def removePlayer(player: Player) {
-    availablePlayers -= player
+  def removePlayer(player2Kill: Player) {
+    availablePlayers -= player2Kill
+    println("killed:" + player2Kill)
   }
 
   def randomPlayer(): Player = {

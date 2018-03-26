@@ -6,6 +6,7 @@ import scala.collection.mutable
 
 object Table {
 
+  val candidates: mutable.Buffer[Player] = mutable.Buffer.empty[Player]
   val availablePlayers: mutable.Buffer[Player] = shuffle(10).toBuffer
 
   def playersNumber = availablePlayers.size

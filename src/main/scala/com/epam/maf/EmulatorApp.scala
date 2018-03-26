@@ -1,8 +1,8 @@
 package com.epam.maf
 
-import com.epam.maf.CandidateMaker._
 import com.epam.maf.Table._
 
+import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.io.StdIn.readLine
 import scala.util.Random
@@ -20,26 +20,24 @@ object EmulatorApp extends App {
   def makeDayStep() = {
     println("***********")
     println("Day in the city")
-    CandidateMaker.candidates.clear()
-    availablePlayers.map(makeCandidate)
+    candidates.clear()
+    candidates ++= availablePlayers.map(_.makeCandidate(availablePlayers)).slice(0,3)
 
-    val dayCandidates = CandidateMaker.candidates
-
-    dayCandidates.foreach(e => println("candidate: " + e.number))
+    Table.candidates.foreach(e => println("candidate: " + e.number))
     readLine()
 
     var killedPlayer: Player = null
-    if (dayCandidates.distinct.size == 1)
-      killedPlayer = dayCandidates.head
+    if (Table.candidates.distinct.size == 1)
+      killedPlayer = Table.candidates.head
     else
-      killedPlayer = doElection(dayCandidates)
+      killedPlayer = doElection(Table.candidates)
     println("killed:" + killedPlayer)
     removePlayer(killedPlayer)
     readLine()
 
   }
 
-  private def doElection(dayCandidates: ListBuffer[Player]) = {
+  private def doElection(dayCandidates: mutable.Buffer[Player]) = {
     val dayVotes = availablePlayers.map(_.makeVote(dayCandidates))
 
     dayVotes.foreach(println)

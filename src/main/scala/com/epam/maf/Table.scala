@@ -12,9 +12,10 @@ object Table {
 
   def onlyOneCandidate() = candidates.distinct.size == 1
 
+  def printCandidates() = candidates.foreach(e => println("candidate: " + e.number))
+
   def setCandidates(newCandidates: Seq[Player]) = {
     candidates.clear()
-
     candidates ++= newCandidates
   }
 

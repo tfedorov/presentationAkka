@@ -22,7 +22,7 @@ case class MafiaPlayer(num: Int) extends Player(num, true) {
     if (votePlayer.isMafia)
       Vote(randomNotSelf(availablePlayers), this)
     else
-      return Vote(votePlayer, this)
+      return Vote(this, votePlayer)
   }
 
   override def makeCandidate(availablePlayers: Seq[Player]): Player = {
@@ -37,7 +37,7 @@ case class MafiaPlayer(num: Int) extends Player(num, true) {
 
 case class PeacePlayer(num: Int) extends Player(num, false) {
   override def makeVote(availablePlayers: Seq[Player]): Vote = {
-    Vote(randomNotSelf(availablePlayers), this)
+    Vote(this, randomNotSelf(availablePlayers))
   }
 
   def makeCandidate(availablePlayers: Seq[Player]): Player = {
@@ -46,6 +46,6 @@ case class PeacePlayer(num: Int) extends Player(num, false) {
 
 }
 
-case class Vote(player: Player, whom: Player) {
-  override def toString: String = s"${player.number} -> ${whom.number}"
+case class Vote(whoVote: Player, whom: Player) {
+  override def toString: String = s"${whoVote.number} -> ${whom.number}"
 }

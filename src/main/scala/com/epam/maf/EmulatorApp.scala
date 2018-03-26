@@ -1,5 +1,7 @@
 package com.epam.maf
 
+import com.epam.maf.Table.candidates
+
 import scala.io.StdIn.readLine
 import scala.util.Random
 
@@ -15,7 +17,10 @@ object EmulatorApp extends App {
 
   println("***********")
   println("Day in the city")
-  DayStepMaker.makeDayStep()
+  DayStepMaker.setCandidates4Vote()
+  println("on vote:")
+  Table.printCandidates()
+  DayStepMaker.makeDayJugment()
   readLine()
 
   println("***********")
@@ -25,6 +30,9 @@ object EmulatorApp extends App {
 
   println("***********")
   println("Day in the city")
-  DayStepMaker.makeDayStep()
-  println("")
+  DayStepMaker.setCandidates4Vote()
+  println("on vote:")
+  Table.printCandidates()
+  DayStepMaker.makeDayJugment()
+  readLine()
 }

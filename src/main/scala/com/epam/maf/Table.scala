@@ -4,15 +4,15 @@ object Table extends RandomListUtils {
 
   var candidates: Seq[Player] = Seq.empty[Player]
 
-  var availablePlayers: Seq[Player] =Seq.empty[Player]
+  var availablePlayers: Seq[Player] = Seq.empty[Player]
 
-  def init(playerNum: Int) = {
+  def init(playerNum: Int): Unit = {
     val shufledNum = randomizeList(1 to playerNum)
     val firstMaph = MafiaPlayer(shufledNum.head)
     val secondMaph = MafiaPlayer(shufledNum.tail.head)
     val thirdMaph = MafiaPlayer(shufledNum.tail.tail.head)
     val peacePlayers: Seq[Player] = shufledNum.tail.tail.tail.map(PeacePlayer(_))
-    availablePlayers = peacePlayers :+ firstMaph :+ secondMaph :+ thirdMaph
+    availablePlayers = (peacePlayers :+ firstMaph :+ secondMaph :+ thirdMaph).sortBy(_.number)
   }
 
   def onlyOneCandidate() = candidates.distinct.size == 1
@@ -23,7 +23,6 @@ object Table extends RandomListUtils {
     availablePlayers = availablePlayers.filter(_ != player2Kill)
     println("killed:" + player2Kill.number)
   }
-
 
 
 }

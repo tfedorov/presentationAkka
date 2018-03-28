@@ -15,10 +15,10 @@ object EmulatorApp extends App {
     s.showHimself
   }
   )
+  Table.availablePlayers.foreach(p => print(p.number))
   readLine()
   makeDay()
 
-  Table.availablePlayers.foreach(p => print(p.number))
 
   readLine()
   println("***********")

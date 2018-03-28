@@ -11,8 +11,12 @@ object Table extends RandomListUtils {
     val firstMaph = MafiaPlayer(shufledNum.head)
     val secondMaph = MafiaPlayer(shufledNum.tail.head)
     val thirdMaph = MafiaPlayer(shufledNum.tail.tail.head)
-    val peacePlayers: Seq[Player] = shufledNum.tail.tail.tail.map(PeacePlayer(_))
-    availablePlayers = (peacePlayers :+ firstMaph :+ secondMaph :+ thirdMaph).sortBy(_.number)
+    val sherif = SherifPlayer(shufledNum.tail.tail.tail.head)
+
+    val peacePlayers: Seq[Player] = shufledNum.tail.tail.tail.tail.map(PeacePlayer(_))
+    println("You are: " + peacePlayers.head)
+    availablePlayers = (peacePlayers :+ sherif :+ firstMaph :+ secondMaph :+ thirdMaph).sortBy(_.number)
+    //println(availablePlayers)
   }
 
   def onlyOneCandidate() = candidates.distinct.size == 1
@@ -21,7 +25,9 @@ object Table extends RandomListUtils {
 
   def removePlayer(player2Kill: Player) {
     availablePlayers = availablePlayers.filter(_ != player2Kill)
-    println("killed:" + player2Kill.number)
+    println("\nkilled:" + player2Kill.number)
+    if (player2Kill.isInstanceOf[SherifPlayer])
+      println("I am sherif")
   }
 
 

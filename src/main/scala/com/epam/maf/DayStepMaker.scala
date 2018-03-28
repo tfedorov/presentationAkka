@@ -25,10 +25,12 @@ object DayStepMaker {
   }
 
   private def calcuateJudges(dayVotes: Seq[Vote]): Player = {
-    dayVotes.groupBy(_.whom)
+    val calculated = dayVotes.groupBy(_.whom)
       .map(numberCallVote => (numberCallVote._1, numberCallVote._2.size))
       .toList
-      .sortWith((l, r) => l._2 > r._2).head._1
+      .sortWith((l, r) => l._2 > r._2)
+    calculated.foreach(p => println(s"player ${p._1.number}: ${p._2} votes"))
+    calculated.head._1
 
   }
 }

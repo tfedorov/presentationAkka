@@ -10,21 +10,33 @@ object EmulatorApp extends App {
   makeNight()
   makeDay()
   makeNight()
+  println("------------")
+  println(Table.availablePlayers.collect { case s: SherifPlayer =>
+    s.showHimself
+  }
+  )
+  readLine()
   makeDay()
+
+  Table.availablePlayers.foreach(p => print(p.number))
 
   readLine()
   println("***********")
   println("result: ")
   availablePlayers.foreach(println)
 
-  def makeDay() = {
+  def makeNight () = {
     println("***********")
     println("Night in the city:")
+    Table.availablePlayers.collect { case s: SherifPlayer =>
+      s.checkPlayers()
+    }
     NightKillMaker.killInNight()
     println("")
+    readLine()
   }
 
-  def makeNight() = {
+  def makeDay() = {
     println("***********")
     println("Day in the city:")
     DayStepMaker.setCandidates4Vote()

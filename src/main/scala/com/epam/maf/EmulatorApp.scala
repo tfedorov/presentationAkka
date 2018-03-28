@@ -5,6 +5,8 @@ import Table._
 
 object EmulatorApp extends App {
 
+  Table.init(10)
+
   println("***********")
   println("Night in the city")
   NightKillMaker.makeNightStep()
@@ -29,5 +31,7 @@ object EmulatorApp extends App {
   DayStepMaker.makeDayJugment()
 
   readLine()
+  println("***********")
+  println("result:")
   availablePlayers.foreach(println)
 }

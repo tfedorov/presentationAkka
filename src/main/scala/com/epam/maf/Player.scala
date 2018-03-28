@@ -1,47 +1,33 @@
 package com.epam.maf
 
-import com.epam.maf.EmulatorApp.random
+abstract class Player(val number: Int, val isMafia: Boolean) extends RandomListUtils {
+  def makeVote(): Vote
 
-abstract class Player(val number: Int, val isMafia: Boolean) {
-  def makeVote(availablePlayers: Seq[Player]): Vote
+  def makeCandidate(): Player
 
-  protected def randomNotSelf(chooseList: Seq[Player]): Player = {
-    val chooseCandidates = chooseList.filterNot(_ == this)
-    chooseCandidates(random.nextInt(chooseCandidates.length))
-  }
-
-  def makeCandidate(availablePlayers: Seq[Player]): Player
+  protected def randomNotSelf(chooseList: Seq[Player]): Player = randomFromList(chooseList.filterNot(_ == this))
 
 }
 
 case class MafiaPlayer(num: Int) extends Player(num, true) {
 
-  override def makeVote(availablePlayers: Seq[Player]): Vote = {
-
-    val votePlayer = randomNotSelf(availablePlayers)
-    if (votePlayer.isMafia)
-      Vote(randomNotSelf(availablePlayers), this)
-    else
-      return Vote(this, votePlayer)
+  override def makeVote(): Vote = {
+    Vote(this, randomNotSelf(Table.candidates.filterNot(_.isMafia)))
   }
 
-  override def makeCandidate(availablePlayers: Seq[Player]): Player = {
-    val cand = randomNotSelf(availablePlayers)
-    if (cand.isMafia)
-      return randomNotSelf(availablePlayers)
-    else
-      return cand
+  override def makeCandidate(): Player = {
+    randomNotSelf(Table.candidates.filterNot(_.isMafia))
   }
 
 }
 
 case class PeacePlayer(num: Int) extends Player(num, false) {
-  override def makeVote(availablePlayers: Seq[Player]): Vote = {
-    Vote(this, randomNotSelf(availablePlayers))
+  override def makeVote(): Vote = {
+    Vote(this, randomNotSelf(Table.candidates))
   }
 
-  def makeCandidate(availablePlayers: Seq[Player]): Player = {
-    randomNotSelf(availablePlayers)
+  override def makeCandidate(): Player = {
+    randomNotSelf(Table.availablePlayers)
   }
 
 }

@@ -1,13 +1,11 @@
 package com.epam.maf
 
-import com.epam.maf.EmulatorApp.random
 import com.epam.maf.Table.{availablePlayers, removePlayer}
 
-object NightKillMaker {
-  def makeNightStep(): Unit = {
+object NightKillMaker extends RandomListUtils {
 
-    val peaceResidents = availablePlayers.filterNot(_.isMafia)
-    val nightVictim = peaceResidents(random.nextInt(peaceResidents.size))
+  def makeNightStep(): Unit = {
+    val nightVictim = randomFromList(availablePlayers.filterNot(_.isMafia))
     removePlayer(nightVictim)
 
   }

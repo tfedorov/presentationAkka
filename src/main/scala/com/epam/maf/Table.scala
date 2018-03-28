@@ -1,29 +1,22 @@
 package com.epam.maf
 
-import com.epam.maf.EmulatorApp.random
+import scala.util.Random
 
-import scala.collection.mutable
+object Table extends RandomListUtils {
 
-object Table {
+  val random = Random
 
-  val candidates: mutable.Buffer[Player] = mutable.Buffer.empty[Player]
+  var candidates: Seq[Player] = Seq.empty[Player]
 
-  val availablePlayers: mutable.Buffer[Player] = shuffle(10).toBuffer
+  var availablePlayers: Seq[Player] = shuffle(10).toBuffer
 
   def onlyOneCandidate() = candidates.distinct.size == 1
-
-  def printCandidates() = candidates.foreach(e => println("candidate: " + e.number))
-
-  def setCandidates(newCandidates: Seq[Player]) = {
-    candidates.clear()
-    candidates ++= newCandidates
-  }
 
   def playersNumber = availablePlayers.size
 
   def removePlayer(player2Kill: Player) {
-    availablePlayers -= player2Kill
-    println("killed:" + player2Kill)
+    availablePlayers = availablePlayers.filter(_ != player2Kill)
+    println("killed:" + player2Kill.number)
   }
 
   def randomPlayer(): Player = {
@@ -47,8 +40,13 @@ object Table {
 
   }
 
-  private def shuffle(playerNum: Int) = (1 to playerNum).map(number => isMaph match {
-    case true => MafiaPlayer(number)
-    case false => PeacePlayer(number)
-  })
+  private def shuffle(playerNum: Int): Seq[Player] = {
+    val shufledNum = randomizeList(1 to playerNum)
+    val firstMaph = MafiaPlayer(shufledNum.head)
+    val secondMaph = MafiaPlayer(shufledNum.tail.head)
+    val thirdMaph = MafiaPlayer(shufledNum.tail.tail.head)
+    val peacePlayers: Seq[Player] = shufledNum.tail.tail.tail.map(PeacePlayer(_))
+    peacePlayers :+ firstMaph :+ secondMaph :+ thirdMaph
+  }
+
 }

@@ -13,7 +13,8 @@ object DayStepMaker {
   }
 
   def setCandidates4Vote(): Unit = {
-    Table.candidates = randomizeList(availablePlayers).take(3)
+   // val cand = Table.sherifCheck.filter(_.isMafia)
+    Table.candidates = availablePlayers.map(_.makeCandidate()).take(2)
   }
 
   private def doDayEllecion(): Player = {

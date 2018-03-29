@@ -12,11 +12,14 @@ abstract class Player(val number: Int, val isMafia: Boolean) extends RandomListU
 case class MafiaPlayer(num: Int) extends Player(num, true) {
 
   override def makeVote(): Vote = {
-    Vote(this, Table.candidates.filterNot(_.isMafia).head)
+    val candidats = Table.candidates.filterNot(_.isMafia)
+    if (candidats.isEmpty)
+      return Vote(this, randomNotSelf(candidats))
+    Vote(this, candidats.head)
   }
 
   override def makeCandidate(): Player = {
-    randomNotSelf(Table.availablePlayers.filterNot(_.isMafia))
+    randomNotSelf(Table.noRedCheckPlayers().filterNot(_.isMafia))
   }
 
 }
@@ -27,7 +30,7 @@ case class PeacePlayer(num: Int) extends Player(num, false) {
   }
 
   override def makeCandidate(): Player = {
-    randomNotSelf(Table.availablePlayers)
+    randomNotSelf(Table.noRedCheckPlayers())
   }
 
 }
@@ -41,7 +44,7 @@ case class SherifPlayer(numb: Int) extends Player(numb, true) {
   }
 
   override def makeCandidate(): Player = {
-    randomNotSelf(Table.availablePlayers)
+    randomNotSelf(Table.noRedCheckPlayers())
   }
 
   def checkPlayers() = {
@@ -50,6 +53,7 @@ case class SherifPlayer(numb: Int) extends Player(numb, true) {
   }
 
   def showHimself(): String = {
+    Table.sherifCheck = checkedPlayers
     s"I am $number and : ${checkedPlayers.map(p => (p.number, p.isMafia))}"
   }
 

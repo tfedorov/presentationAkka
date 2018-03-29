@@ -6,6 +6,13 @@ object Table extends RandomListUtils {
 
   var availablePlayers: Seq[Player] = Seq.empty[Player]
 
+  var sherifCheck: Seq[Player] = Seq.empty
+
+  def noRedCheckPlayers(): Seq[Player]  ={
+    val redChecks = sherifCheck.filterNot(_.isMafia)
+    availablePlayers.filterNot(redChecks.contains(_))
+  }
+
   def init(playerNum: Int): Unit = {
     val shufledNum = randomizeList(1 to playerNum)
     val firstMaph = MafiaPlayer(shufledNum.head)

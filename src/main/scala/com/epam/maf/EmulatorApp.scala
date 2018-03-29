@@ -9,12 +9,14 @@ object EmulatorApp extends App {
 
   makeNight()
   makeDay()
+  Table.availablePlayers.foreach(p => print(p.number))
   makeNight()
+  readLine()
   println("------------")
-  println(Table.availablePlayers.collect { case s: SherifPlayer =>
-    s.showHimself
+  Table.availablePlayers.collect { case s: SherifPlayer =>
+    println(s.showHimself)
   }
-  )
+
   Table.availablePlayers.foreach(p => print(p.number))
   readLine()
   makeDay()
@@ -25,7 +27,7 @@ object EmulatorApp extends App {
   println("result: ")
   availablePlayers.foreach(println)
 
-  def makeNight () = {
+  def makeNight() = {
     println("***********")
     println("Night in the city:")
     Table.availablePlayers.collect { case s: SherifPlayer =>

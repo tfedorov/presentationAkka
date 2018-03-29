@@ -13,6 +13,10 @@ object Table extends RandomListUtils {
     availablePlayers.filterNot(redChecks.contains(_))
   }
 
+  def checkedBlack() ={
+    sherifCheck.filter(_.isMafia)
+  }
+
   def init(playerNum: Int): Unit = {
     val shufledNum = randomizeList(1 to playerNum)
     val firstMaph = MafiaPlayer(shufledNum.head)

@@ -1,8 +1,7 @@
 package com.epam.maf
 
 import com.epam.maf.Table._
-
-import scala.collection.mutable
+import com.epam.maf.player.{Player, Vote}
 
 object DayStepMaker {
   def makeDayJugment(): Unit = {

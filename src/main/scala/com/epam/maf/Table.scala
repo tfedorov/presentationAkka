@@ -1,20 +1,24 @@
 package com.epam.maf
 
+import com.epam.maf.player.{MafiaPlayer, PeacePlayer, Player, SherifPlayer}
+
 object Table extends RandomListUtils {
 
   var candidates: Seq[Player] = Seq.empty[Player]
 
   var availablePlayers: Seq[Player] = Seq.empty[Player]
 
+  def availableNoMaf() = availablePlayers.filterNot(_.isInstanceOf[MafiaPlayer])
+
   var sherifCheck: Seq[Player] = Seq.empty
 
-  def noRedCheckPlayers(): Seq[Player]  ={
-    val redChecks = sherifCheck.filterNot(_.isMafia)
+  def noRedCheckPlayers(): Seq[Player] = {
+    val redChecks = sherifCheck.filterNot(_.isInstanceOf[MafiaPlayer])
     availablePlayers.filterNot(redChecks.contains(_))
   }
 
-  def checkedBlack() ={
-    sherifCheck.filter(_.isMafia)
+  def checkedBlack() = {
+    sherifCheck.filter(_.isInstanceOf[MafiaPlayer])
   }
 
   def init(playerNum: Int): Unit = {
@@ -26,8 +30,8 @@ object Table extends RandomListUtils {
 
     val peacePlayers: Seq[Player] = shufledNum.tail.tail.tail.tail.map(PeacePlayer(_))
     println("You are: " + peacePlayers.head)
+    peacePlayers.head.yourSelf = true
     availablePlayers = (peacePlayers :+ sherif :+ firstMaph :+ secondMaph :+ thirdMaph).sortBy(_.number)
-    //println(availablePlayers)
   }
 
   def onlyOneCandidate() = candidates.distinct.size == 1
@@ -36,10 +40,7 @@ object Table extends RandomListUtils {
 
   def removePlayer(player2Kill: Player) {
     availablePlayers = availablePlayers.filter(_ != player2Kill)
-    println("\nkilled:" + player2Kill.number)
-    if (player2Kill.isInstanceOf[SherifPlayer])
-      println("I am sherif")
+    player2Kill.kill()
   }
-
 
 }

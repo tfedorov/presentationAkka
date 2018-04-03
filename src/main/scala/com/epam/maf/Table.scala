@@ -8,6 +8,14 @@ object Table extends RandomListUtils {
 
   var availablePlayers: Seq[Player] = Seq.empty[Player]
 
+  def sherifChecking() = {
+    availablePlayers.filter(_.isInstanceOf[SherifPlayer]).foreach(_.asInstanceOf[SherifPlayer].checkPlayers())
+  }
+
+  def sherifShowUP() = {
+    availablePlayers.filter(_.isInstanceOf[SherifPlayer]).foreach(_.asInstanceOf[SherifPlayer].printSherif)
+  }
+
   def availableNoMaf() = availablePlayers.filterNot(_.isInstanceOf[MafiaPlayer])
 
   var sherifCheck: Seq[Player] = Seq.empty

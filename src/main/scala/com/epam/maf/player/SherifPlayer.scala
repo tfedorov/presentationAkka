@@ -4,7 +4,7 @@ import com.epam.maf.Table
 
 case class SherifPlayer(numb: Int) extends Player(numb) {
 
-  var checkedPlayers: Seq[Player] = Seq.empty
+  private var checkedPlayers: Seq[Player] = Seq.empty
 
   override def makeVote(): Vote = {
     Vote(this, randomNotSelf(Table.candidates))

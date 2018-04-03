@@ -1,8 +1,8 @@
 package com.epam.maf
 
+import com.epam.maf.Table._
+
 import scala.io.StdIn.readLine
-import Table._
-import com.epam.maf.player.SherifPlayer
 
 object EmulatorApp extends App {
 
@@ -10,20 +10,17 @@ object EmulatorApp extends App {
 
   makeNight()
   makeDay()
-  printAvailable()
+
   makeNight()
-  readLine()
+
   println("------------")
-
-  Table.availablePlayers.collect { case s: SherifPlayer =>
-    s.printSherif
-    printAvailable()
-  }
+  sherifShowUP()
+  printAvailable()
   readLine()
 
-  makeDay()
+  //makeDay()
 
-  readLine()
+  //readLine()
   println("***********")
   println("result: ")
   availablePlayers.foreach(println)
@@ -31,11 +28,8 @@ object EmulatorApp extends App {
   def makeNight() = {
     println("***********")
     println("Night in the city:")
-    Table.availablePlayers.collect { case s: SherifPlayer =>
-      s.checkPlayers()
-    }
+    sherifChecking()
     NightKillMaker.killInNight()
-    println("")
     printAvailable()
     readLine()
   }
@@ -46,6 +40,7 @@ object EmulatorApp extends App {
     DayStepMaker.setCandidates4Vote()
     println("on vote candidates: " + candidates.map(_.number))
     DayStepMaker.makeDayJugment()
+    printAvailable()
   }
 
   def printAvailable() = Table.availablePlayers.foreach(p => print(p.number + " "))

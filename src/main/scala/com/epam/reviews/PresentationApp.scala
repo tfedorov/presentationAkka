@@ -7,11 +7,11 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.alpakka.csv.scaladsl.{CsvParsing, CsvToMap}
-import akka.stream.scaladsl.{FileIO, Flow, Keep, Sink}
+import akka.stream.scaladsl.{FileIO, Flow, Keep, Sink, Source}
 import akka.stream.{ActorMaterializer, Materializer}
 import com.epam.reviews.SentimentRequestMaker.makeRequest
 
-import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.language.implicitConversions
 import scala.util.{Success, Try}
 
@@ -29,21 +29,27 @@ object PresentationApp extends App {
 
   val httpsFlow: Flow[(HttpRequest, Product), (Try[HttpResponse], Product), Http.HostConnectionPool] = Http().newHostConnectionPoolHttps[Product]("community-sentiment.p.mashape.com")
 
-
   val fN = csvFileSource.via(CsvParsing.lineScanner())
     .via(CsvToMap.toMap())
     .map(lineMap => Product(lineMap("Brand Name").utf8String, lineMap("Reviews").utf8String))
-    //.filter(prod => "Nokia".equals(prod.name))
     .map(nokiaProd => (makeRequest(nokiaProd.review), nokiaProd))
     .via(httpsFlow)
-    .collect { case (Success(resp), product) => (resp.entity, product.review) }
-    .mapAsync(2)(entRew => Unmarshal(entRew._1).to[String].map(entRew._2 + ":" + _))
+    .filter(_._1.isSuccess)
+    .mapAsync(2)(resp => parse(resp._1.get))
     .toMat(Sink.head)(Keep.right).run()
-
-
+  /*
+  val fN = Source.single(Product("Bicycle Ukraine", "Is the worst bicycle i have seen"))
+    .map(singleProd => (makeRequest(singleProd.review), singleProd))
+    .via(httpsFlow)
+    .filter(_._1.isSuccess)
+    .mapAsync(2)(resp => parse(resp._1.get))
+    .toMat(Sink.head)(Keep.right).run()
+*/
   fN.onComplete {
     case Success(e) => {
       println(e)
     }
   }
+
+  private[this] def parse(response: HttpResponse): Future[String] = Unmarshal(response.entity).to[String]
 }

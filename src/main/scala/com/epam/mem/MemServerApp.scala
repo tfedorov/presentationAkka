@@ -25,6 +25,9 @@ object MemServerApp extends App {
     .via(httpsFlow)
     .map(_._1.get)
 
+  val host = "localhost"
+  val port = 80
+  /*
   val route: Route = path("memGenerate") {
     get {
       decodeRequest {
@@ -47,12 +50,8 @@ object MemServerApp extends App {
       }
     }
   }
-
-  val host = "localhost"
-  val port = 80
-
-  //val bindingFuture = Http().bindAndHandle(route, host, port)
-
+  val bindingFuture = Http().bindAndHandle(route, host, port)
+*/
   val bindingFuture = Http().bindAndHandle(generateFlow, host, port)
 
   println(s"curl -XGET 'http://$host:$port/memGenerate'")

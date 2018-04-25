@@ -7,9 +7,10 @@ object Mem {
   import scala.util.Random
 
   private val acronymMap = Seq(
-    "WPM" -> "Workforce+Planning+and+Management",
+   // "WPM" -> "Workforce+Planning+and+Management",
     "RR" -> "Relocation+Request",
     "POC" -> "Proof+of+concept",
+    "BT" -> "Business+Trip",
     "TSR" -> "Technical+Support+Request")
 
   def random() = {
@@ -975,6 +976,5 @@ object Mem {
     "Coulson",
     "Fat-Val-Kilmer",
     "Skeptical-Baby")
-
 
 }

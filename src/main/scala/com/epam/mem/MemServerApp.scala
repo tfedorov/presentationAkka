@@ -27,31 +27,7 @@ object MemServerApp extends App {
 
   val host = "localhost"
   val port = 80
-  /*
-  val route: Route = path("memGenerate") {
-    get {
-      decodeRequest {
-        entity(as[HttpRequest]) { request: HttpRequest =>
-          val callFuture: Future[HttpResponse] = Source.single[HttpRequest](request)
-            .via(generateFlow)
-            .toMat(Sink.head)(Keep.right).run()
 
-          onComplete(callFuture) {
-            case Success(e) => {
-              println("success")
-              complete(e)
-            }
-            case w => {
-              println("fail")
-              complete(w.toString)
-            }
-          }
-        }
-      }
-    }
-  }
-  val bindingFuture = Http().bindAndHandle(route, host, port)
-*/
   val bindingFuture = Http().bindAndHandle(generateFlow, host, port)
 
   println(s"curl -XGET 'http://$host:$port/memGenerate'")

@@ -1,4 +1,4 @@
-package com.epam.actor
+package com.tfedorov.actor
 
 import akka.actor._
 
@@ -15,7 +15,7 @@ case class StopMessage(reason: String)
 class Ping(pong: ActorRef) extends Actor {
   private[this] var internalState = 0
 
-  def receive = {
+  def receive: PartialFunction[Any, Unit] = {
     case StartMessage =>
       pong ! PingMessage(internalState)
 
@@ -32,7 +32,7 @@ class Ping(pong: ActorRef) extends Actor {
 }
 
 class Pong extends Actor {
-  def receive = {
+  def receive: PartialFunction[Any, Unit] = {
     case PingMessage(num) =>
       println("  pong - " + num)
       sender ! PongMessage

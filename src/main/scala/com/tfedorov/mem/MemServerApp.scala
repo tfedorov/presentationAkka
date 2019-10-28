@@ -1,4 +1,4 @@
-package com.epam.mem
+package com.tfedorov.mem
 
 import akka.NotUsed
 import akka.actor.ActorSystem
@@ -18,7 +18,8 @@ object MemServerApp extends App {
   implicit val materializer: Materializer = ActorMaterializer()
   implicit val executionContext: ExecutionContextExecutor = materializer.executionContext
 
-  val httpsFlow: Flow[(HttpRequest, NotUsed), (Try[HttpResponse], NotUsed), Http.HostConnectionPool] = Http().newHostConnectionPoolHttps[NotUsed]("ronreiter-meme-generator.p.mashape.com")
+  val httpsFlow: Flow[(HttpRequest, NotUsed), (Try[HttpResponse], NotUsed), Http.HostConnectionPool] =
+    Http().newHostConnectionPoolHttps[NotUsed]("ronreiter-meme-generator.p.mashape.com")
 
   def generateFlow: Flow[HttpRequest, HttpResponse, NotUsed] = Flow[HttpRequest].map(_ => Mem.random())
     .map(str => (MemRequestMaker.makeRequest(str), NotUsed))

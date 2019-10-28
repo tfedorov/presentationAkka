@@ -1,3 +1,6 @@
+import sbt.Keys._
+import sbt._
+
 name := "presentation"
 
 version := "0.1"
@@ -18,3 +21,13 @@ libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.4"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
 libraryDependencies += "com.lightbend.akka" %% "akka-stream-alpakka-csv" % "0.16"
+
+
+lazy val manifestSettings = Seq(
+  packageOptions in(Compile, packageBin) +=
+    Package.ManifestAttributes(
+      "git_last_commit" -> git.gitHeadCommit.value.toString,
+      "git_last_message" -> git.gitHeadMessage.value.toString.replaceAll("\n", ""))
+)
+
+lazy val root = Project(id = "root", base = file(".")).settings(manifestSettings: _*)

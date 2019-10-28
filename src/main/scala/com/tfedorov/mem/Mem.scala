@@ -1,4 +1,4 @@
-package com.epam.mem
+package com.tfedorov.mem
 
 case class Mem(top: String, bottom: String, image: String)
 
@@ -13,7 +13,7 @@ object Mem {
     "BT" -> "Business+Trip",
     "TSR" -> "Technical+Support+Request")
 
-  def random() = {
+  def random(): Mem = {
     val randomImage = images(Random.nextInt(images.size))
     val randomPair = acronymMap(Random.nextInt(acronymMap.size))
     Mem(randomPair._1, randomPair._2, randomImage)

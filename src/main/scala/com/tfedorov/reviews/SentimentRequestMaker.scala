@@ -1,4 +1,4 @@
-package com.epam.reviews
+package com.tfedorov.reviews
 
 import akka.http.javadsl.model.MediaRanges
 import akka.http.scaladsl.model.MediaRanges.PredefinedMediaRange
@@ -10,7 +10,7 @@ protected[reviews] object SentimentRequestMaker {
   private val CONTENT_TYPE = MediaTypes.`application/x-www-form-urlencoded`.toContentType(HttpCharsets.`UTF-8`)
   private val ACCEPT_HEADER = Accept(MediaRanges.ALL_APPLICATION.asInstanceOf[PredefinedMediaRange])
 
-  protected[reviews] def makeRequest(text: String) = {
+  protected[reviews] def makeRequest(text: String): HttpRequest = {
     val entity = HttpEntity(CONTENT_TYPE, s"txt=$text")
     HttpRequest(
       uri = Uri("https://community-sentiment.p.mashape.com/text/"),

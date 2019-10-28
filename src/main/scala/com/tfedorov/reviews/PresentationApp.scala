@@ -1,4 +1,4 @@
-package com.epam.reviews
+package com.tfedorov.reviews
 
 import java.nio.file.Paths
 
@@ -7,13 +7,13 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.alpakka.csv.scaladsl.{CsvParsing, CsvToMap}
-import akka.stream.scaladsl.{FileIO, Flow, Keep, Sink, Source}
+import akka.stream.scaladsl.{FileIO, Flow, Keep, Sink}
 import akka.stream.{ActorMaterializer, Materializer}
-import com.epam.reviews.SentimentRequestMaker.makeRequest
+import com.tfedorov.reviews.SentimentRequestMaker.makeRequest
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.language.implicitConversions
-import scala.util.{Success, Try}
+import scala.util.Try
 
 object PresentationApp extends App {
 
@@ -45,11 +45,7 @@ object PresentationApp extends App {
     .mapAsync(2)(resp => parse(resp._1.get))
     .toMat(Sink.head)(Keep.right).run()
 */
-  fN.onComplete {
-    case Success(e) => {
-      println(e)
-    }
-  }
+  fN.map(println)
 
   private[this] def parse(response: HttpResponse): Future[String] = Unmarshal(response.entity).to[String]
 }

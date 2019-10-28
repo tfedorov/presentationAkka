@@ -1,8 +1,5 @@
 package com.tfedorov.admin
 
-import java.net.URL
-import java.util.jar.Manifest
-
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
@@ -10,7 +7,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 
 import scala.concurrent.ExecutionContextExecutor
-import scala.io.StdIn
+import scala.io.{Source, StdIn}
 
 object WebAdmin extends App {
 
@@ -21,12 +18,7 @@ object WebAdmin extends App {
 
   private val PORT = 8080
 
-  private lazy val readMANIFEST: String = {
-    val enumeration = Thread.currentThread.getContextClassLoader.getResources("META-INF/MANIFEST.MF")
-    val url: URL = enumeration.nextElement()
-    val manifest: Manifest = new Manifest(url.openStream)
-    manifest.getMainAttributes.toString
-  }
+  private lazy val readMANIFEST: String = Source.fromResource("META-INF/MANIFEST.MF").getLines.mkString("\n")
 
   val route =
     path("admin") {
@@ -37,7 +29,7 @@ object WebAdmin extends App {
 
   val bindingFuture = Http().bindAndHandle(route, "localhost", PORT)
 
-  println(s"Server online at http://localhost:$PORT/\nPress RETURN to stop...")
+  println(s"Server online at http://localhost:$PORT/admin \nPress RETURN to stop...")
   StdIn.readLine() // let it run until user presses return
   bindingFuture.flatMap(_.unbind()) // trigger unbinding from the port
     .onComplete(_ => system.terminate()) // and shutdown when done

@@ -5,6 +5,7 @@ name := "presentation"
 
 version := "0.1"
 
+//scalaVersion := "2.11.8"
 scalaVersion := "2.12.3"
 
 libraryDependencies ++= Seq(
@@ -13,7 +14,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http" % "10.0.11",
   "com.typesafe.akka" %% "akka-http-testkit" % "10.0.11" % Test,
   "com.lightbend.akka" %% "akka-stream-alpakka-file" % "0.15",
-  "org.scala-lang.modules" % "scala-xml_2.12" % "1.0.6"
+  "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
 )
 
 libraryDependencies += "org.apache.commons" % "commons-text" % "1.1"

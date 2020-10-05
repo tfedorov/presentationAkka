@@ -3,33 +3,25 @@ package com.tfedorov.mem
 import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
-import akka.http.scaladsl.server.Directives.{as, complete, decodeRequest, entity, get, onComplete, path}
-import akka.http.scaladsl.server.Route
-import akka.stream.scaladsl.{Flow, Keep, Sink, Source}
-import akka.stream.{ActorMaterializer, Materializer}
-
-import scala.concurrent.{ExecutionContextExecutor, Future}
-import scala.util.{Success, Try}
+import akka.http.scaladsl.model.HttpRequest
+import akka.stream.scaladsl.Flow
 
 object MemServerApp extends App {
 
   implicit val actorSystem: ActorSystem = ActorSystem("Sys")
-  implicit val materializer: Materializer = ActorMaterializer()
-  implicit val executionContext: ExecutionContextExecutor = materializer.executionContext
 
-  val httpsFlow: Flow[(HttpRequest, NotUsed), (Try[HttpResponse], NotUsed), Http.HostConnectionPool] =
-    Http().newHostConnectionPoolHttps[NotUsed]("ronreiter-meme-generator.p.mashape.com")
+  val httpsFlow = Http().cachedHostConnectionPool[NotUsed]("apimeme.com")
 
-  def generateFlow: Flow[HttpRequest, HttpResponse, NotUsed] = Flow[HttpRequest].map(_ => Mem.random())
-    .map(str => (MemRequestMaker.makeRequest(str), NotUsed))
-    .via(httpsFlow)
-    .map(_._1.get)
+  val generateFlow =
+    Flow[HttpRequest].map(_ => Mem.random())
+      .map(mem => (MemRequestMaker.makeRequest(mem), NotUsed))
+      .via(httpsFlow)
+      .map(_._1.get)
 
   val host = "localhost"
-  val port = 80
+  val port = 8080
 
-  val bindingFuture = Http().bindAndHandle(generateFlow, host, port)
+  val bindingFuture = Http().newServerAt(host, port).bindFlow(generateFlow)
 
-  println(s"curl -XGET 'http://$host:$port/memGenerate'")
+  println(s"curl -XGET 'http://$host:$port/'")
 }

@@ -1,4 +1,4 @@
-package com.tfedorov.stream
+package com.tfedorov.simple
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer

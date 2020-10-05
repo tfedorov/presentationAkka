@@ -1,15 +1,17 @@
 package com.tfedorov.mem
 
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers.RawHeader
 
 protected[mem] object MemRequestMaker {
 
   protected[mem] def makeRequest(mem: Mem): HttpRequest = {
+    //http://apimeme.com/meme?meme=Confused-Gandalf&top=Top+text&bottom=Bottom+text&test=1
+    val uri = Uri(s"http://apimeme.com/meme?meme=${mem.image}&top=${mem.top}&bottom=${mem.bottom}&test=1")
+    println(uri.toString())
     HttpRequest(
-      uri = Uri(s"https://ronreiter-meme-generator.p.mashape.com/meme?bottom=${mem.bottom}&font=Impact&font_size=50&meme=${mem.image}&top=${mem.top}"),
+      uri = uri,
       method = HttpMethods.GET
-    ).addHeader(RawHeader("X-Mashape-Key", "NNfrCoW1yfmshbv8DzK3AeZiJr1Gp1LLdOPjsnlsjPog0dZCYd"))
+    ) //.addHeader(RawHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"))
 
   }
 

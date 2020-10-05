@@ -1,23 +1,20 @@
 package com.tfedorov.reviews
 
-import akka.http.javadsl.model.MediaRanges
-import akka.http.scaladsl.model.MediaRanges.PredefinedMediaRange
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers.{Accept, RawHeader}
+import akka.http.scaladsl.model.headers.RawHeader
+import akka.http.scaladsl.model.{FormData, _}
 
 protected[reviews] object SentimentRequestMaker {
-
-  private val CONTENT_TYPE = MediaTypes.`application/x-www-form-urlencoded`.toContentType(HttpCharsets.`UTF-8`)
-  private val ACCEPT_HEADER = Accept(MediaRanges.ALL_APPLICATION.asInstanceOf[PredefinedMediaRange])
-
+  
+  //https://rapidapi.com/twinword/api/sentiment-analysis
   protected[reviews] def makeRequest(text: String): HttpRequest = {
-    val entity = HttpEntity(CONTENT_TYPE, s"txt=$text")
+    val entity = FormData("text" -> text).toEntity
+
     HttpRequest(
-      uri = Uri("https://community-sentiment.p.mashape.com/text/"),
+      uri = Uri("https://api.deepai.org/api/sentiment-analysis"),
       method = HttpMethods.POST,
       entity = entity
-    ).addHeader(RawHeader("X-Mashape-Key", "NNfrCoW1yfmshbv8DzK3AeZiJr1Gp1LLdOPjsnlsjPog0dZCYd"))
-      .addHeader(ACCEPT_HEADER)
+    )
+      .addHeader(RawHeader("api-key", "a44fb8c7-4b7e-4540-9588-6cd52878dea0"))
   }
 
 }

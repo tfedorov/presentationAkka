@@ -7,12 +7,15 @@ version := "0.1"
 
 //scalaVersion := "2.11.8"
 scalaVersion := "2.12.3"
-
+val AkkaVersion = "2.6.8"
+val AkkaHttpVersion = "10.2.1"
 libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-stream" % "2.5.8",
-  "com.typesafe.akka" %% "akka-stream-testkit" % "2.5.8" % Test,
-  "com.typesafe.akka" %% "akka-http" % "10.0.11",
-  "com.typesafe.akka" %% "akka-http-testkit" % "10.0.11" % Test,
+  "com.typesafe.akka" %% "akka-stream" % AkkaVersion,
+  "com.typesafe.akka" %% "akka-stream-testkit" % AkkaVersion % Test,
+  "com.typesafe.akka" %% "akka-http" % AkkaHttpVersion,
+  "com.typesafe.akka" %% "akka-http-spray-json" % AkkaHttpVersion,
+  "com.typesafe.akka" %% "akka-http-testkit" % AkkaHttpVersion % Test,
+  "com.typesafe.akka" %% "akka-actor-typed" % AkkaVersion,
   "com.lightbend.akka" %% "akka-stream-alpakka-file" % "0.15",
   "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
 )

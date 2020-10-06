@@ -2,9 +2,9 @@ package com.tfedorov.mem
 
 import akka.http.scaladsl.model._
 
-protected[mem] object MemRequestMaker {
+protected[mem] object RequestMaker {
 
-  protected[mem] def makeRequest(mem: Mem): HttpRequest = {
+  private[mem] def makeRequest(mem: MemID): HttpRequest = {
     //http://apimeme.com/meme?meme=Confused-Gandalf&top=Top+text&bottom=Bottom+text&test=1
     val uri = Uri(s"http://apimeme.com/meme?meme=${mem.image}&top=${mem.top}&bottom=${mem.bottom}&test=1")
     println(uri.toString())

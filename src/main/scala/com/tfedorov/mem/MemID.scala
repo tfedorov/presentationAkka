@@ -1,8 +1,8 @@
 package com.tfedorov.mem
 
-case class Mem(top: String, bottom: String, image: String)
+case class MemID(top: String, bottom: String, image: String)
 
-object Mem {
+object MemID {
 
   import scala.util.Random
 
@@ -16,10 +16,10 @@ object Mem {
     "ASAP" -> "As+soon+as+possible")
   private val images = "Success-Kid-Original" ::"Peter-Parker-Cry" :: "Condescending-Wonka" :: "Chuck-Norris-Flex" :: Nil
 
-  def random(): Mem = {
+  private[mem] def random(): MemID = {
     val randomImage = images(Random.nextInt(images.size))
     val randomPair = acronymMap(Random.nextInt(acronymMap.size))
-    Mem(randomPair._1, randomPair._2, randomImage)
+    MemID(randomPair._1, randomPair._2, randomImage)
   }
 
 }

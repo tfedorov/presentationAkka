@@ -6,22 +6,33 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpRequest
 import akka.stream.scaladsl.Flow
 
+import scala.concurrent.ExecutionContextExecutor
+import scala.io.StdIn
+
 object MemServerApp extends App {
 
-  implicit val actorSystem: ActorSystem = ActorSystem("Sys")
+  private final val SERVICE = "apimeme.com"
+  println(s"The MemServerApp gets acronyms and procces them via API: $SERVICE")
 
-  val httpsFlow = Http().cachedHostConnectionPool[NotUsed]("apimeme.com")
+  implicit val actorSystem: ActorSystem = ActorSystem("Sys")
+  val httpsFlow = Http().cachedHostConnectionPool[NotUsed](SERVICE)
 
   val generateFlow =
-    Flow[HttpRequest].map(_ => Mem.random())
-      .map(mem => (MemRequestMaker.makeRequest(mem), NotUsed))
+    Flow[HttpRequest].map(_ => MemID.random())
+      .map(mem => (RequestMaker.makeRequest(mem), NotUsed))
       .via(httpsFlow)
       .map(_._1.get)
 
-  val host = "localhost"
-  val port = 8080
+  final val host = "localhost"
+  final val port = 8080
 
   val bindingFuture = Http().newServerAt(host, port).bindFlow(generateFlow)
 
   println(s"curl -XGET 'http://$host:$port/'")
+  println("Press RETURN to stop...")
+
+  StdIn.readLine() // let it run until user presses return
+  private implicit val executionContext: ExecutionContextExecutor = actorSystem.dispatcher
+  bindingFuture.flatMap(_.unbind()) // trigger unbinding from the port
+    .onComplete(_ => actorSystem.terminate()) // and shutdown when done
 }

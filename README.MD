@@ -8,6 +8,7 @@ Set of applications, for briefly review of the **akka** functionality.
   - PingPongApp
   - HelloActorApp
   - SimpleStreamApp
+  - JsonGeneratorApp
   
   
 ### WebApp
@@ -66,4 +67,7 @@ TBD
 
 ### PingPongApp
 SimpleStreamApp is an simple example of the Graph: source + flow + sink
+TBD
+
+###JsonGeneratorApp$
 TBD

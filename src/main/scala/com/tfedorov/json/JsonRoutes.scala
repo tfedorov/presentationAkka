@@ -2,37 +2,39 @@ package com.tfedorov.json
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.server.{Directives, Route}
-import com.tfedorov.json.JsonGeneratorApp.{Item, Order}
-import spray.json.DefaultJsonProtocol
-
-import scala.util.Random
+import com.tfedorov.json.Data.{Item, Order}
+import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 private[json] class JsonRoutes extends Directives with SprayJsonSupport with DefaultJsonProtocol {
-  implicit val itemFormat = jsonFormat2(Item)
-  implicit val orderFormat = jsonFormat1(Order) // contains List[Item]
+  implicit val itemFormat: RootJsonFormat[Item] = jsonFormat2(Item)
+  implicit val orderFormat: RootJsonFormat[Order] = jsonFormat1(Order)
+
+
+  private val getItemRoute: Route = get {
+    complete(Data.randomItem)
+  }
+
+  private val postItemRoute: Route = post {
+    entity(as[Item]) { item: Item => // will unmarshal JSON to Item
+      complete(item + 1)
+    }
+  }
+  private val getOrderRoute: Route = get {
+    complete(Data.randomOrder)
+  }
+
+  private val postOrderRoute: Route = post {
+    entity(as[Order]) { order: Order => // will unmarshal JSON to Order
+      complete(order + 1)
+    }
+  }
+
   private[json] val route: Route =
     concat(pathPrefix("item") {
       concat(getItemRoute, postItemRoute)
     }, pathPrefix("order") {
-      postOrderRoute
+      concat(getOrderRoute, postOrderRoute)
     })
-
-
-  private val getItemRoute: Route = get {
-    complete(Item("thing" + Random.nextString(3), Random.nextInt(100)))
-  }
-  private val postItemRoute: Route = post {
-    entity(as[Item]) { item: Item => // will unmarshal JSON to Item
-      complete(s"Item id=${item.id},  name=${item.name}\n")
-    }
-  }
-  private val postOrderRoute: Route = post {
-    entity(as[Order]) { order: Order => // will unmarshal JSON to Order
-      val itemsCount = order.items.size
-      val itemNames = order.items.map(_.name).mkString(", ")
-      complete(s"Ordered $itemsCount items: $itemNames\n")
-    }
-  }
 
 }
 

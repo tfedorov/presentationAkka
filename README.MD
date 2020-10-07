@@ -58,12 +58,11 @@ And process reviews throw http://api.deepai.org .The 3rd party API which makes s
 SentimentApp reads a file, parse text, creates akka client in one flow.
 
 
-###JsonGeneratorApp
-Application create a Web Server. EndPoints works with 2 entities: **Item**, **Order**.
-
-*Get* methods return random jsons(**Item**/**Order**)
-
-*Post* methods receive **Item**/**Order** , change value, and return back as json.
+### JsonGeneratorApp
+The JsonGeneratorApp create a Web Server. EndPoints works with 2 entities: *Item*, *Order*.
+  - *Get* methods return random jsons(**Item**/**Order**)
+  - *Post* methods receive **Item**/**Order** , change value, and return back as json.
+  
 ```sh
 curl http://localhost:8080/item
 curl -X POST -H 'Content-Type: application/json' -d '{"name":"abc", "id": 42}' http://localhost:8080/item

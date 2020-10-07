@@ -11,9 +11,10 @@ object JsonGeneratorApp extends App {
   private val HOST = "localhost"
   private val PORT = 8080
   private implicit val actorSystem: ActorSystem = ActorSystem("my-system")
-  private val bindingFuture = Http().newServerAt(HOST, PORT).bindFlow(new JsonRoutes().route)
-  //private val bindingFuture = Http().newServerAt(HOST, PORT).bindSync(new JsonHandler().requestHandler)
+  //private val bindingFuture = Http().newServerAt(HOST, PORT).bindFlow(new JsonRoutes().route)
+  private val bindingFuture = Http().newServerAt(HOST, PORT).bindSync(new JsonHandlerWithMarshal().requestHandler)
 
+  println(s"Application create a Web Server. EndPoints works with 2 entities: Item, Order")
   println(s"curl http://$HOST:$PORT/item")
   println(s"""curl -X POST -H 'Content-Type: application/json' -d '{"name":"abc", "id": 42}' http://$HOST:$PORT/item""")
   println(s"curl http://$HOST:$PORT/order")

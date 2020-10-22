@@ -3,11 +3,11 @@ package com.tfedorov.graphs
 import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.ClosedShape
-import akka.stream.scaladsl.{Balance, Flow, GraphDSL, Merge, RunnableGraph, Sink, Source}
+import akka.stream.scaladsl.{Flow, GraphDSL, RunnableGraph, Sink, Source, UnzipWith, ZipWith}
 
 import scala.io.StdIn
 
-object BalanceMerge extends App {
+object UnzipZipApp extends App {
 
   private implicit val system: ActorSystem = ActorSystem("simple-streams")
 
@@ -16,17 +16,18 @@ object BalanceMerge extends App {
     val in = Source(1 to 10)
     val out = Sink.foreach(println)
 
-    val bcast = builder.add(Balance[String](2))
-
-    val merge = builder.add(Merge[String](2))
+    val unZipped = builder.add(UnzipWith[String, String, String](in => ("unz1:(" + in + ")", "unz2:(" + in + ")")))
+    val zipped = builder.add(ZipWith[String, String, String]((in1: String, in2: String) => "(" + in1 + ") zipped (" + in2 + ")"))
 
     val fStart = Flow[Int].map("Source:" + _ + "~>  input ~>")
     val fTop = Flow[String].map(_ + "top   ~>")
     val fBottom = Flow[String].map(_ + "bottom~>")
     val fFinal = Flow[String].map(_ + "final~>")
 
-    in ~> fStart ~> bcast ~> fTop ~> merge ~> fFinal ~> out
-    /*           */ bcast ~> fBottom ~> merge
+    in ~> fStart ~> unZipped.in
+    /*            */ unZipped.out0 ~> fTop /*  */ ~> zipped.in0
+    /*            */ unZipped.out1 ~> fBottom /**/~> zipped.in1
+    /*                                            */ zipped.out ~> fFinal ~> out
     ClosedShape
   })
 

@@ -7,7 +7,7 @@ import akka.stream.scaladsl.{Flow, GraphDSL, RunnableGraph, Sink, Source, ZipWit
 
 import scala.io.StdIn
 
-object Zip2Sources extends App {
+object Zip2SourcesApp extends App {
 
   private implicit val system: ActorSystem = ActorSystem("simple-streams")
 

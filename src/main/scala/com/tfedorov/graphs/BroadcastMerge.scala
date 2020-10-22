@@ -1,4 +1,4 @@
-package com.tfedorov.simple
+package com.tfedorov.graphs
 
 import akka.NotUsed
 import akka.actor.ActorSystem
@@ -7,7 +7,7 @@ import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, Merge, RunnableGraph, Si
 
 import scala.io.StdIn
 
-object GraphSimple extends App {
+object BroadcastMerge extends App {
 
   private implicit val system: ActorSystem = ActorSystem("simple-streams")
 
@@ -17,15 +17,16 @@ object GraphSimple extends App {
     val out = Sink.foreach(println)
 
     val bcast = builder.add(Broadcast[String](2))
+
     val merge = builder.add(Merge[String](2))
 
-    val f1 = Flow[Int].map(_ + " f1~>")
-    val f2 = Flow[String].map(_ + "f2~>")
-    val f3 = Flow[String].map(_ + "f3~>")
-    val f4 = Flow[String].map(_ + "f4~>")
+    val fStart = Flow[Int].map("Source:" + _ + "~>  input ~>")
+    val fTop = Flow[String].map(_ + "top   ~>")
+    val fBottom = Flow[String].map(_ + "bottom~>")
+    val fFinal = Flow[String].map(_ + "final~>")
 
-    in ~> f1 ~> bcast ~> f2 ~> merge ~> f3 ~> out
-    /*       */ bcast ~> f4 ~> merge
+    in ~> fStart ~> bcast ~> fTop ~> merge ~> fFinal ~> out
+    /*           */ bcast ~> fBottom ~> merge
     ClosedShape
   })
 

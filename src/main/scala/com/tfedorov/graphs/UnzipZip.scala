@@ -25,9 +25,9 @@ object UnzipZip extends App {
     val fFinal = Flow[String].map(_ + "final~>")
 
     in ~> fStart ~> unZipped.in
-    unZipped.out0 ~> fTop ~> zipped.in0
-    unZipped.out1 ~> fBottom ~> zipped.in1
-    /*           */ zipped.out ~> fFinal ~> out
+    /*            */ unZipped.out0 ~> fTop /*  */ ~> zipped.in0
+    /*            */ unZipped.out1 ~> fBottom /**/~> zipped.in1
+    /*                                            */ zipped.out ~> fFinal ~> out
     ClosedShape
   })
 

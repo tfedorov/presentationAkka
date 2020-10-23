@@ -3,23 +3,24 @@ package com.tfedorov.graphs
 import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.SinkShape
-import akka.stream.scaladsl.{Flow, GraphDSL, Keep, Merge, Partition, Sink, Source}
+import akka.stream.scaladsl.{Flow, GraphDSL, Merge, Partition, Sink, Source, _}
 
-import scala.io.StdIn
 import scala.util.Random
 
 object PartitionerApp extends App {
 
   private val random = new Random()
-  private val steps = "✂" :: "✊" :: "-" :: Nil
+  private val steps = "✌️" :: "✊" :: "✋" :: Nil
 
   final def getRandom: String = steps(random.nextInt(3))
 
-  private def isWinner(player1: String, player2: String): Boolean = (player1, player2) match {
-    case ("✂", "-") => true
-    case ("✊", "✂") => true
-    case ("-", "✊") => true
-    case _ => false
+  private def isWinner(player1: String, player2: String): Boolean = {
+    (player1, player2) match {
+      case ("✌️", "✋") => true
+      case ("✊", "✌️") => true
+      case ("✋", "✊") => true
+      case _ => false
+    }
   }
 
   private implicit val system: ActorSystem = ActorSystem("simple-streams")
@@ -46,9 +47,11 @@ object PartitionerApp extends App {
     SinkShape(merge.in(1))
   }
 
+  import scala.concurrent.duration._
+
   val inputSource = Source(getRandom :: getRandom :: getRandom :: Nil)
-  val r = inputSource.toMat(Sink.fromGraph(gameGraph))(Keep.both)
-  r.run()
-  StdIn.readLine()
+  val forever: Source[String, NotUsed] = RestartSource.onFailuresWithBackoff(1.second, 10.seconds, 0.1, 3)((() => inputSource))
+
+  forever.to(Sink.fromGraph(gameGraph)).run()
   system.terminate()
 }
